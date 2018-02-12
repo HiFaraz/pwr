@@ -17,6 +17,8 @@ $pwrPackagesFolder = "packages";
 $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
 
 $pwrUsage = "
+pwr, a decentralized package manager
+
 Usage:`
   pwr add <url>
   pwr list
@@ -54,9 +56,9 @@ function add {
     # allow user to specify gitpath with $env:GITPATH
     checkGitPath;
     & $env:GITPATH clone --depth=1 --quiet $url $pkgPath;
-    pushd $pkgPath;
-    rm ".git" -recurse -force;
-    popd;
+    # pushd $pkgPath;
+    # rm ".git" -recurse -force;
+    # popd;
 
     if (!($?)) {
       # git clone failed
