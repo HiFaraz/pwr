@@ -55,9 +55,6 @@ function add {
     # allow user to specify gitpath with $env:GITPATH
     checkGitPath;
     & $env:GITPATH clone --depth=1 --quiet $url $pkgPath;
-    # pushd $pkgPath;
-    # rm ".git" -recurse -force;
-    # popd;
 
     if (!($?)) {
       # git clone failed
