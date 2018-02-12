@@ -15,18 +15,33 @@ $pwrVersion = (readJSON "$psScriptRoot\..\manifest.json").version;
 $pwrPackagesFolder = "packages";
 $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
 
-$pwrUsage = "
-$($pwrName), a decentralized package manager
+$pwrHelp = @{};
+$pwrHelp.default = "
+Usage: $($pwrName) <command> [<args>]
 
-Usage:`
-  $($pwrName) add <url>
-  $($pwrName) list
-  $($pwrName) remove <name>
-  $($pwrName) update <name>
+Commands:
 
-$($pwrName)@$($pwrVersion) $($pwrRoot)
+add`tAdd a package
+help`tShow help for a command or pwr itself
+list`tList added packages
+remove`tRemove a package
+update`tUpdate a package
+
+Run '$($pwrName) help <command>' to get help for a specific command.
+Visit http://pwrpkg.com to learn more about pwr.
+
+$($pwrName) ($($pwrVersion)) $($pwrRoot)
 ";
 
+
+<##
+ # Add a package
+ #>
+$pwrHelp.add = "
+Add a package
+
+Usage: $($pwrName) add <repo url>
+";
 function add {
   [CmdletBinding()]
   param(
@@ -100,7 +115,31 @@ Available commands:
     }
   }
 }
+<##
+ # Print help information
+ #>
+function help {
+  param([string] $command);
 
+  if ($command -eq $null -or $command -eq "") {
+    echo $pwrHelp.default;
+  } else {
+    $helpMsg = $pwrHelp[$command];
+    if ($helpMsg) {
+      echo $helpMsg;
+    } else {
+      echo "No help available for command $($command)."
+    }
+  }
+}
+
+<##
+ # List added packages
+ #>
+$pwrHelp.list = "
+List added packages
+Usage: $($pwrName) list
+";
 function list {
   echo "Added packages:`n";
   pushd $pwrPackagesPath;
@@ -120,6 +159,14 @@ function list {
   echo "";
 }
 
+<##
+ # Remove a package
+ #>
+$pwrHelp.remove = "
+Remove a package
+
+Usage: $($pwrName) remove <name>
+";
 function remove {
   [CmdletBinding()]
   param(
@@ -168,6 +215,14 @@ function remove {
   }
 }
 
+<##
+ # Update a package
+ #>
+$pwrHelp.update = "
+Update a package
+
+Usage: $($pwrName) update <name>
+";
 function update {
   [CmdletBinding()]
   param(
@@ -205,8 +260,9 @@ function update {
 $command = $args[0];
 
 switch ($command) {
+  default { help; }
   "add" { add -url $args[1]; }
-  default { echo $pwrUsage; }
+  "help" { help -command $args[1]; }
   "list" { list; }
   "remove" { remove -name $args[1]; }
   "update" { update -name $args[1]; }

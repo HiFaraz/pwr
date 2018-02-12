@@ -7,7 +7,7 @@ Any git repo is a valid pwr package as long as it has a `manifest.json`. This re
 
 pwr can run binaries and PowerShell scripts directly. You can run bash or cmd scripts by calling the appropriate binary.
 
-pwr is inspired by npm and Yarn.
+pwr is inspired by npm, Yarn, and Scoop.
 
 ## Dependencies
 
@@ -35,9 +35,15 @@ pwr
 ## Usage
 
 ```
-Usage:
-  pwr add <url>
-  pwr list
-  pwr remove <name>
-  pwr update <name>
+Usage: pwr <command> [<args>]
+
+Commands:
+
+add     Add a package
+help    Show help for a command or pwr itself
+list    List added packages
+remove  Remove a package
+update  Update a package
+
+Run 'pwr help <command>' to get help for a specific command.
 ```
