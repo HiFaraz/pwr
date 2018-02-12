@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/HiFaraz/pwr/issues"
   },
-  "git": "https://github.com/HiFaraz/pwr.git",
+  "git": "https://github.com/HiFaraz/pwr",
   "bin": {
     "pwr": "bin/pwr.ps1"
   }
