@@ -48,7 +48,7 @@ function add {
     }
 
     if (!($silent)) {
-      echo "$($pwrName) adding $($name)`n  url: $($url)`n  path: $($pkgPath)";
+      echo "Adding '$($name)'.";
     }
   
     # git clone to $pkgPath
@@ -86,13 +86,13 @@ function add {
 
       if (!($silent)) {
         echo "
-pwr added $($name)@$($pkgManifest.version)
+'$($name)' ($($pkgManifest.version)) was added.
 
-available commands:
+Available commands:
 
-  pwr remove $($name)
-  pwr update $($name)
-";
+  $($pwrName) remove $($name)
+  $($pwrName) update $($name)
+        ";
       }
     }
     catch {
@@ -105,7 +105,7 @@ available commands:
 }
 
 function list {
-  echo "$($pwrName) list`n";
+  echo "Added packages:`n";
   pushd $pwrPackagesPath;
   $manifests = ls manifest.json -recurse | resolve-path -relative | split-path;
   
@@ -142,7 +142,7 @@ function remove {
     }
 
     if (!($silent)) {
-      echo "$($pwrName) removing $($name)`n  path: $($pkgPath)";
+      echo "Removing '$($name)'";
     }
 
     try {
@@ -160,7 +160,7 @@ function remove {
       rm $pkgPath -recurse -force;
 
       if (!($silent)) {
-        echo "`npwr removed $($name)@$($pkgManifest.version)";
+        echo "`'$($name)' ($($pkgManifest.version)) was removed.";
       }
     }
     catch {
@@ -187,7 +187,7 @@ function update {
       exit 1;
     }
  
-    echo "$($pwrName) updating $($name)`n  path: $($pkgPath)";
+    echo "Updating '$($name)'.";
 
     try {
       # get package manifest data
@@ -196,7 +196,7 @@ function update {
       add -url $pkgManifest.git -silent;
       $updatedPkgManifest = readJSON "$($pkgPath)\manifest.json";
       
-      echo "`npwr updated $($name)@$($updatedPkgManifest.version)";
+      echo "'$($name)' ($($updatedPkgManifest.version)) was updated.";
     }
     catch {
       write-error $PSItem.ToString();
