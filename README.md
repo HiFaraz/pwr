@@ -43,7 +43,7 @@ add     Add a package
 help    Show help for a command or pwr itself
 list    List added packages
 remove  Remove a package
-update  Update a package
+update  Update a package, or pwr itself
 
 Run 'pwr help <command>' to get help for a specific command.
 ```

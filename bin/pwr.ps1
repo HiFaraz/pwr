@@ -11,6 +11,7 @@
 if (!($pwrName)) {
   $pwrName = "pwr";
 }
+$pwrRepoURL = "github.com/hifaraz/pwr";
 $pwrVersion = (readJSON "$psScriptRoot\..\manifest.json").version;
 $pwrPackagesFolder = "packages";
 $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
@@ -25,7 +26,7 @@ add`tAdd a package
 help`tShow help for a command or pwr itself
 list`tList added packages
 remove`tRemove a package
-update`tUpdate a package
+update`tUpdate a package, or pwr itself
 
 Run '$($pwrName) help <command>' to get help for a specific command.
 Visit http://pwrpkg.com to learn more about pwr.
@@ -40,7 +41,7 @@ $($pwrName) ($($pwrVersion)) $($pwrRoot)
 $pwrHelp.add = "
 Add a package
 
-Usage: $($pwrName) add <repo url>
+Usage: $($pwrName) add <package url>
 ";
 function add {
   [CmdletBinding()]
@@ -165,7 +166,7 @@ function list {
 $pwrHelp.remove = "
 Remove a package
 
-Usage: $($pwrName) remove <name>
+Usage: $($pwrName) remove <package>
 ";
 function remove {
   [CmdletBinding()]
@@ -221,16 +222,22 @@ function remove {
 $pwrHelp.update = "
 Update a package
 
-Usage: $($pwrName) update <name>
+Usage: $($pwrName) update <package>
+
+'$($pwrName) update' updates $($pwrName) to the latest version.
+'$($pwrName) update <package>`' adds a new version of that package, if there is one.
 ";
 function update {
   [CmdletBinding()]
   param(
-    [parameter(mandatory = $true)]
     [string] $name
   )
 
   process {
+    if ($name -eq "") {
+      $name = $pwrRepoURL;
+    }
+
     $pkgPath = "$($pwrPackagesPath)\$($name)";
 
     # throw if not added
