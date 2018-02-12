@@ -8,20 +8,23 @@
 
 . "$PSScriptRoot\..\lib\utils.ps1"
 
+if (!($pwrName)) {
+  $pwrName = "pwr";
+}
 $pwrVersion = (readJSON "$psScriptRoot\..\manifest.json").version;
 $pwrPackagesFolder = "packages";
 $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
 
 $pwrUsage = "
-pwr, a decentralized package manager
+$($pwrName), a decentralized package manager
 
 Usage:`
-  pwr add <url>
-  pwr list
-  pwr remove <name>
-  pwr update <name>
+  $($pwrName) add <url>
+  $($pwrName) list
+  $($pwrName) remove <name>
+  $($pwrName) update <name>
 
-pwr@$($pwrVersion) $($pwrRoot)
+$($pwrName)@$($pwrVersion) $($pwrRoot)
 ";
 
 function add {
@@ -45,7 +48,7 @@ function add {
     }
 
     if (!($silent)) {
-      echo "pwr adding $($name)`n  url: $($url)`n  path: $($pkgPath)";
+      echo "$($pwrName) adding $($name)`n  url: $($url)`n  path: $($pkgPath)";
     }
   
     # git clone to $pkgPath
@@ -102,7 +105,7 @@ available commands:
 }
 
 function list {
-  echo "pwr list`n";
+  echo "$($pwrName) list`n";
   pushd $pwrPackagesPath;
   $manifests = ls manifest.json -recurse | resolve-path -relative | split-path;
   
@@ -139,7 +142,7 @@ function remove {
     }
 
     if (!($silent)) {
-      echo "pwr removing $($name)`n  path: $($pkgPath)";
+      echo "$($pwrName) removing $($name)`n  path: $($pkgPath)";
     }
 
     try {
@@ -184,7 +187,7 @@ function update {
       exit 1;
     }
  
-    echo "pwr updating $($name)`n  path: $($pkgPath)";
+    echo "$($pwrName) updating $($name)`n  path: $($pkgPath)";
 
     try {
       # get package manifest data
