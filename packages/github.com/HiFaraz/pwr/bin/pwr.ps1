@@ -19,6 +19,7 @@ $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
 $pwrUsage = "
 Usage:`
   pwr add <url>
+  pwr list
   pwr remove <name>
   pwr update <name>
 
