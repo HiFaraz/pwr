@@ -191,8 +191,9 @@ function update {
       $pkgManifest = readJSON "$($pkgPath)\manifest.json";
       remove -name $name -silent;
       add -url $pkgManifest.git -silent;
-
-      echo "`npwr updated $($name)@$($pkgManifest.version)";
+      $updatedPkgManifest = readJSON "$($pkgPath)\manifest.json";
+      
+      echo "`npwr updated $($name)@$($updatedPkgManifest.version)";
     }
     catch {
       write-error $PSItem.ToString();
