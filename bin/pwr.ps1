@@ -104,8 +104,13 @@ available commands:
 function list {
   echo "pwr list`n";
   pushd $pwrPackagesPath;
-  $dirs = ls manifest.json -recurse | resolve-path -relative | split-path;
-  $dirs | foreach-object {
+  $manifests = ls manifest.json -recurse | resolve-path -relative | split-path;
+  
+  if ($manifests.length -eq 0) {
+    echo "No packages added";
+  }
+  
+  $manifests | foreach-object {
     $_ -match "\.\\(?<path>.*)" > $null;
     $name = $matches["path"] -replace "\\","/";
     $version = (readJSON("$_\manifest.json")).version;
