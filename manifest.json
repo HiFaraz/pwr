@@ -1,0 +1,14 @@
+{
+  "version": "0.1.0",
+  "description": "pwr, a cross-platform package manager",
+  "author": "Faraz Syed <hello@farazsyed.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/HiFaraz/pwr#readme",
+  "bugs": {
+    "url": "https://github.com/HiFaraz/pwr/issues"
+  },
+  "git": "https://github.com/HiFaraz/pwr.git",
+  "bin": {
+    "pwr": "bin/pwr.ps1"
+  }
+}
