@@ -24,6 +24,14 @@ git clone https://github.com/HiFaraz/pwr
 
 Add the project directory to your `$PATH`.
 
+Finally, bootstrap pwr with:
+
+```
+pwr add http://github.com/HiFaraz/pwr
+```
+
+(this allows you to update pwr like any other package)
+
 ## Usage
 
 ```
