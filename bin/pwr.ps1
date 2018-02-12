@@ -71,7 +71,7 @@ function add {
         foreach ($bin in $pkgManifest.bin.psObject.properties) {
           $binPath = "$($pwrRoot)\$($bin.name).ps1";
           # check for bin file name conflicts
-          if (test-path $binPath) {
+          if (!($bin.name -eq "pwr" -and $name.toLower() -eq "github.com/hifaraz/pwr") -and (test-path $binPath)) {
             write-error "Could not create bin file @ $($binPath), file already exists. Skipping this bin file";
           }
           else {
