@@ -8,7 +8,7 @@
 
 . "$PSScriptRoot\..\lib\utils.ps1"
 
-$pwrVersion = (readJSON "$pwrRoot\manifest.json").version;
+$pwrVersion = (readJSON "$psScriptRoot\..\manifest.json").version;
 $pwrPackagesFolder = "packages";
 $pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
 
@@ -109,7 +109,7 @@ function list {
   if ($manifests.length -eq 0) {
     echo "No packages added";
   }
-  
+
   $manifests | foreach-object {
     $_ -match "\.\\(?<path>.*)" > $null;
     $name = $matches["path"] -replace "\\","/";
