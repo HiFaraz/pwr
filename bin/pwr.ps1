@@ -6,10 +6,6 @@
  # Copyright 2018
  #>
 
-#  param(
-#   [parameter(position=0)] $command="help"
-# )
-
 . "$PSScriptRoot\..\lib\utils.ps1"
 
 $pwrVersion = (readJSON "$pwrRoot\manifest.json").version;
