@@ -9,6 +9,6 @@
   },
   "git": "https://github.com/HiFaraz/pwr",
   "bin": {
-    "pwr": "bin/pwr.ps1"
+    "pwr.ps1": "bin/pwr.ps1"
   }
 }
