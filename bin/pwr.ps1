@@ -90,7 +90,7 @@ function add {
         foreach ($bin in $pkgManifest.bin.psObject.properties) {
           $binPath = join-path $pwrRoot $bin.name;
           # check for bin file name conflicts
-          if (!($bin.name -eq "pwr" -and $name.toLower() -eq "github.com/hifaraz/pwr") -and (test-path $binPath)) {
+          if (!($bin.name -eq "pwr.ps1" -and $name.toLower() -eq "github.com/hifaraz/pwr") -and (test-path $binPath)) {
             write-error "Could not create bin file @ $($binPath), file already exists. Skipping this bin file";
           }
           else {
@@ -211,7 +211,7 @@ function remove {
       # delete bin scripts
       if (!($pkgManifest.bin -eq $null)) {
         foreach ($bin in $pkgManifest.bin.psObject.properties) {
-          $binPath = join-path $pwrRoot "$($bin.name).ps1";
+          $binPath = join-path $pwrRoot $bin.name;
           rm $binPath;
         }
       }
