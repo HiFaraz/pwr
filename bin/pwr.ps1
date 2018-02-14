@@ -55,7 +55,7 @@ function add {
   )
 
   process {
-    $urlProtocol, $name = $url -split "://";
+    $urlProtocol, $name = $url.toLower() -split "://";
     $pkgPath = join-path $pwrPackagesPath $name;
     $pkgManifestPath = join-path $pkgPath "manifest.json";
   
@@ -268,7 +268,7 @@ function update {
       $pkgManifestPath = join-path $pkgPath "manifest.json";
       $pkgManifest = readJSON $pkgManifestPath;
       remove -name $name -silent;
-      add -url $pkgManifest.git.toLower() -silent;
+      add -url $pkgManifest.git -silent;
       $updatedPkgManifest = readJSON $pkgManifestPath;
       
       echo "'$($name)' ($($updatedPkgManifest.version)) was updated.";
