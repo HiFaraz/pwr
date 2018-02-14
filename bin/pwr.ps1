@@ -149,7 +149,7 @@ function list {
   if (test-path $pwrPackagesPath) {
   echo "Added packages:`n";
   pushd $pwrPackagesPath;
-  $manifests = ls manifest.json -recurse | resolve-path -relative | split-path;
+    $manifests = get-childitem "manifest.json" -recurse | resolve-path -relative | split-path;
     popd;
   } else {
     $manifests = @();
@@ -157,13 +157,18 @@ function list {
   
   if ($manifests.length -eq 0) {
     echo "No packages added";
-  }
-
+  } else {
   $manifests | foreach-object {
+      if ([IO.Path]::DirectorySeparatorChar -eq "/") {
+        $_ -match "\./(?<path>.*)" > $null;
+      } else {
     $_ -match "\.\\(?<path>.*)" > $null;
+      }
     $name = $matches["path"] -replace "\\","/";
-    $version = (readJSON("$_\manifest.json")).version;
+      $pkgManifestPath = join-path $pwrPackagesPath $_ "manifest.json";
+      $version = (readJSON $pkgManifestPath).version;
     echo "$($name)@$($version)";
+    };
   }
   echo "";
 }
