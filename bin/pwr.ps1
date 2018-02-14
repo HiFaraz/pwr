@@ -114,7 +114,7 @@ Available commands:
     }
     catch {
       # clean up cloned repo
-      rm $pkgPath -recurse -force;
+      remove-item $pkgPath -recurse -force;
       write-error $PSItem.ToString();
       exit 1;
     }
@@ -147,8 +147,8 @@ Usage: $($pwrName) list
 ";
 function list {
   if (test-path $pwrPackagesPath) {
-  echo "Added packages:`n";
-  pushd $pwrPackagesPath;
+    echo "Added packages:`n";
+    pushd $pwrPackagesPath;
     $manifests = get-childitem "manifest.json" -recurse | resolve-path -relative | split-path;
     popd;
   } else {
@@ -158,16 +158,16 @@ function list {
   if ($manifests.length -eq 0) {
     echo "No packages added";
   } else {
-  $manifests | foreach-object {
+    $manifests | foreach-object {
       if ([IO.Path]::DirectorySeparatorChar -eq "/") {
         $_ -match "\./(?<path>.*)" > $null;
       } else {
-    $_ -match "\.\\(?<path>.*)" > $null;
+        $_ -match "\.\\(?<path>.*)" > $null;
       }
-    $name = $matches["path"] -replace "\\","/";
+      $name = $matches["path"] -replace "\\","/";
       $pkgManifestPath = join-path $pwrPackagesPath $_ "manifest.json";
       $version = (readJSON $pkgManifestPath).version;
-    echo "$($name)@$($version)";
+      echo "$($name)@$($version)";
     };
   }
   echo "";
@@ -217,7 +217,7 @@ function remove {
       }
 
       # delete package
-      rm $pkgPath -recurse -force;
+      remote-item $pkgPath -recurse -force;
 
       if (!($silent)) {
         echo "`'$($name)' ($($pkgManifest.version)) was removed.";
