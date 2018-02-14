@@ -217,7 +217,7 @@ function remove {
       }
 
       # delete package
-      remote-item $pkgPath -recurse -force;
+      remove-item $pkgPath -recurse -force;
 
       if (!($silent)) {
         echo "`'$($name)' ($($pkgManifest.version)) was removed.";
@@ -268,7 +268,7 @@ function update {
       $pkgManifestPath = join-path $pkgPath "manifest.json";
       $pkgManifest = readJSON $pkgManifestPath;
       remove -name $name -silent;
-      add -url $pkgManifest.git -silent;
+      add -url $pkgManifest.git.toLower() -silent;
       $updatedPkgManifest = readJSON $pkgManifestPath;
       
       echo "'$($name)' ($($updatedPkgManifest.version)) was updated.";
