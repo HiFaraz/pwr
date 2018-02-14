@@ -12,9 +12,11 @@ if (!($pwrName)) {
   $pwrName = "pwr";
 }
 $pwrRepoURL = "github.com/hifaraz/pwr";
-$pwrVersion = (readJSON "$psScriptRoot\..\manifest.json").version;
+$pwrManifestPath = join-path $psScriptRoot .. "manifest.json" -resolve;
+$pwrVersion = (readJSON $pwrManifestPath).version;
 $pwrPackagesFolder = "packages";
-$pwrPackagesPath = "$($pwrRoot)\$($pwrPackagesFolder)";
+$pwrPackagesPath = join-path $pwrRoot $pwrPackagesFolder;
+
 
 $pwrHelp = @{};
 $pwrHelp.default = "
@@ -54,11 +56,12 @@ function add {
 
   process {
     $urlProtocol, $name = $url -split "://";
-    $pkgPath = "$($pwrPackagesPath)\$($name)";
+    $pkgPath = join-path $pwrPackagesPath $name;
+    $pkgManifestPath = join-path $pkgPath "manifest.json";
   
     # throw if already added
-    if (test-path "$($pkgPath)\manifest.json") {
-      $pkgVersion = (readJSON "$($pkgPath)\manifest.json").version;
+    if (test-path $pkgManifestPath) {
+      $pkgVersion = (readJSON $pkgManifestPath).version;
       throw "$($name)@$($pkgVersion) already added @ $($pkgPath)";
       exit 1;
     }
@@ -80,19 +83,20 @@ function add {
     # any error must clean up cloned files now
     try {
       # get package manifest data
-      $pkgManifest = readJSON "$($pkgPath)\manifest.json";
+      $pkgManifest = readJSON $pkgManifestPath;
       
       # create bin scripts if needed
       if (!($pkgManifest.bin -eq $null)) {
         foreach ($bin in $pkgManifest.bin.psObject.properties) {
-          $binPath = "$($pwrRoot)\$($bin.name).ps1";
+          $binPath = join-path $pwrRoot "$($bin.name).ps1";
           # check for bin file name conflicts
           if (!($bin.name -eq "pwr" -and $name.toLower() -eq "github.com/hifaraz/pwr") -and (test-path $binPath)) {
             write-error "Could not create bin file @ $($binPath), file already exists. Skipping this bin file";
           }
           else {
+            $binTargetPath = join-path "$pwrRoot" $pwrPackagesFolder $name $bin.value;
             "`$pwrRoot = `$PSScriptRoot;
-& `"`$pwrRoot\$($pwrPackagesFolder)\$($name)\$($bin.value)`" @args;" > $binPath;
+& `"$($binTargetPath)`" @args;" > $binPath;
           }
         }
       }
@@ -142,9 +146,14 @@ List added packages
 Usage: $($pwrName) list
 ";
 function list {
+  if (test-path $pwrPackagesPath) {
   echo "Added packages:`n";
   pushd $pwrPackagesPath;
   $manifests = ls manifest.json -recurse | resolve-path -relative | split-path;
+    popd;
+  } else {
+    $manifests = @();
+  }
   
   if ($manifests.length -eq 0) {
     echo "No packages added";
@@ -156,7 +165,6 @@ function list {
     $version = (readJSON("$_\manifest.json")).version;
     echo "$($name)@$($version)";
   }
-  popd;
   echo "";
 }
 
@@ -178,7 +186,7 @@ function remove {
   )
 
   process {
-    $pkgPath = "$($pwrPackagesPath)\$($name)";
+    $pkgPath = join-path $pwrPackagesPath $name;
 
     # throw if not added
     if (!(test-path $pkgPath)) {
@@ -192,12 +200,14 @@ function remove {
 
     try {
       # get package manifest data
-      $pkgManifest = readJSON "$($pkgPath)\manifest.json";
+      $pkgManifestPath = join-path $pkgPath "manifest.json";
+      $pkgManifest = readJSON $pkgManifestPath;
       
       # delete bin scripts
       if (!($pkgManifest.bin -eq $null)) {
         foreach ($bin in $pkgManifest.bin.psObject.properties) {
-          rm "$($pwrRoot)\$($bin.name).ps1";
+          $binPath = join-path $pwrRoot "$($bin.name).ps1";
+          rm $binPath;
         }
       }
 
@@ -238,7 +248,7 @@ function update {
       $name = $pwrRepoURL;
     }
 
-    $pkgPath = "$($pwrPackagesPath)\$($name)";
+    $pkgPath = join-path $pwrPackagesPath $name;
 
     # throw if not added
     if (!(test-path $pkgPath)) {
@@ -250,10 +260,11 @@ function update {
 
     try {
       # get package manifest data
-      $pkgManifest = readJSON "$($pkgPath)\manifest.json";
+      $pkgManifestPath = join-path $pkgPath "manifest.json";
+      $pkgManifest = readJSON $pkgManifestPath;
       remove -name $name -silent;
       add -url $pkgManifest.git -silent;
-      $updatedPkgManifest = readJSON "$($pkgPath)\manifest.json";
+      $updatedPkgManifest = readJSON $pkgManifestPath;
       
       echo "'$($name)' ($($updatedPkgManifest.version)) was updated.";
     }
